@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6b25ff10-76a6-45c3-bd13-237bf2f8b51c" name="Default Changelist" comment="" />
+    <list default="true" id="6b25ff10-76a6-45c3-bd13-237bf2f8b51c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/DL-3DCNN.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DL-3DCNN.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,6 +84,29 @@
       <option name="presentableId" value="Default" />
       <updated>1631089855545</updated>
     </task>
+    <task id="LOCAL-00001" summary="First Commit. Siamese Network Example">
+      <created>1631093642693</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1631093642693</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="SHOW_OTHER_BRANCHES" value="true" />
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+      </list>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="First Commit. Siamese Network Example" />
+    <option name="LAST_COMMIT_MESSAGE" value="First Commit. Siamese Network Example" />
   </component>
 </project>

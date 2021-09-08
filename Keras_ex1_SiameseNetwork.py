@@ -53,6 +53,9 @@ print("[INFO] loading MNIST dataset...")
 print("[INFO] preparing positive and negative pairs...")
 (pairTrain, labelTrain) = make_pairs(trainX, trainY)
 (pairTest, labelTest) = make_pairs(testX, testY)
+print("------- mnist dataset info -------",
+      "\ntrainX.shape:", trainX.shape, "trainY.shape:", trainY.shape,
+      "\ntestX.shape:", testX.shape, "testY.shape:", testY.shape)
 # initialize the list of images that will be used when building our
 # montage
 images = []
