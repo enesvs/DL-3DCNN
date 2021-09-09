@@ -1,0 +1,9 @@
+--- GPU Driver Installation ---
+https://linuxconfig.org/how-to-install-the-nvidia-drivers-on-ubuntu-21-04
+https://linuxconfig.org/how-to-disable-blacklist-nouveau-nvidia-driver-on-ubuntu-20-04-focal-fossa-linux
+!ubuntu-drivers devices
+!sudo ubuntu-drivers autoinstall
+!sudo apt install nvidia-driver-460   <<< what is recommended driver version after runnig ""ubuntu-drivers devices"" ??
+
+!nvcc --version   <<< "command nvcc not found"
+!sudo apt install nvidia-cuda-toolkit

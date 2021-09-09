@@ -10,6 +10,7 @@ from tensorflow.keras.layers import GlobalAveragePooling2D
 from tensorflow.keras.layers import MaxPooling2D
 from tensorflow.keras.layers import Lambda
 from tensorflow.keras.datasets import mnist
+from tensorflow.keras.callbacks import ModelCheckpoint
 
 # import the necessary packages
 import tensorflow.keras.backend as K
@@ -144,20 +145,25 @@ distance = Lambda(euclidean_distance)([featsA, featsB])
 outputs = Dense(1, activation="sigmoid")(distance)
 model = Model(inputs=[imgA, imgB], outputs=outputs)
 
-# # compile the model
-# print("[INFO] compiling model...")
-# model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
-# # train the model
-# print("[INFO] training model...")
-# history = model.fit(
-#     [pairTrain[:, 0], pairTrain[:, 1]], labelTrain[:],
-#     validation_data=([pairTest[:, 0], pairTest[:, 1]], labelTest[:]),
-#     batch_size=BATCH_SIZE,
-#     epochs=EPOCHS)
-#
-# # serialize the model to disk
-# print("[INFO] saving siamese model...")
-# model.save(MODEL_PATH)
-# # plot the training history
-# print("[INFO] plotting training history...")
-# plot_training(history, PLOT_PATH)
+# compile the model
+print("[INFO] compiling model...")
+model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
+# train the model
+print("[INFO] training model...")
+
+checkpoint = ModelCheckpoint("best_model.hdf5", monitor='loss', verbose=1,
+    save_best_only=True, mode='auto', period=1)
+
+history = model.fit(
+    [pairTrain[:, 0], pairTrain[:, 1]], labelTrain[:],
+    validation_data=([pairTest[:, 0], pairTest[:, 1]], labelTest[:]),
+    batch_size=BATCH_SIZE,
+    epochs=EPOCHS,
+    callbacks=[checkpoint])
+
+# serialize the model to disk
+print("[INFO] saving siamese model...")
+model.save(MODEL_PATH)
+# plot the training history
+print("[INFO] plotting training history...")
+plot_training(history, PLOT_PATH)
