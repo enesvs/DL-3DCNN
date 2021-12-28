@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6b25ff10-76a6-45c3-bd13-237bf2f8b51c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/MicroPython.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HandGesture_ver0_collect_data_UDP.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HandGesture_ver1_collect_data_TCP.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandGesture_ver2_trainModel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandGesture_ver0_collect_data_UDP.py" beforeDir="false" afterPath="$PROJECT_DIR$/HandGesture_ver0_collect_data_UDP.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +40,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager" selected="Python.HandGesture_ver0_collect_data_UDP">
@@ -182,7 +182,14 @@
       <option name="project" value="LOCAL" />
       <updated>1631096713537</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Second Commit. Siamese Network Example with Small Change">
+      <created>1634234028635</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1634234028635</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
