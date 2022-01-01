@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6b25ff10-76a6-45c3-bd13-237bf2f8b51c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/HandGesture_ver2_trainModel.py" afterDir="false" />
+    <list default="true" id="6b25ff10-76a6-45c3-bd13-237bf2f8b51c" name="Default Changelist" comment="Tez yazılımı oluşturuldu. modelnet10/train/off dosyaları binvox dönüştürüldü.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HandGesture_ver0_collect_data_UDP.py" beforeDir="false" afterPath="$PROJECT_DIR$/HandGesture_ver0_collect_data_UDP.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Thesis_Lib.py" beforeDir="false" afterPath="$PROJECT_DIR$/Thesis_Lib.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Thesis_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Thesis_main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +29,9 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="MicroPythonDevices" autoDetectDevicePath="false" />
   <component name="ProjectId" id="1xqk9ghoWmiV39uAFLG6nyZIse7" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -40,10 +43,9 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.HandGesture_ver0_collect_data_UDP">
+  <component name="RunManager" selected="Python.Thesis_main">
     <configuration name="HandGesture_ver0_collect_data_UDP" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DL-3DCNN" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -128,7 +130,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Keras_ex2_TrainSiameseNetwork" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Thesis_main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DL-3DCNN" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -140,7 +142,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Keras_ex2_TrainSiameseNetwork.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Thesis_main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -151,11 +153,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Thesis_main" />
         <item itemvalue="Python.HandGesture_ver0_collect_data_UDP" />
         <item itemvalue="Python.HandGesture_ver1_collect_data_TCP" />
         <item itemvalue="Python.Keras_ex0_gpu_usage_test" />
         <item itemvalue="Python.Keras_ex1_SiameseNetwork" />
-        <item itemvalue="Python.Keras_ex2_TrainSiameseNetwork" />
       </list>
     </recent_temporary>
   </component>
@@ -201,6 +203,17 @@
         <option value="Default.Date" />
         <option value="Default.Subject" />
       </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
     </option>
   </component>
   <component name="VcsManagerConfiguration">
