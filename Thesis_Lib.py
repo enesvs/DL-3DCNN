@@ -16,22 +16,23 @@ from tensorflow.keras.utils import plot_model, to_categorical
 
 class Dataset:
 
-    def __init__(self, prefixDir):
+    def __init__(self, prefixDir, prefixDirOutput):
         print("\n----- Dataset Initialization  started!! -----")
         time.sleep(2)
 
         self.prefixDir = prefixDir
+        self.prefixDirOutput = prefixDirOutput
 
         self.classesInfo = {"listOfClasses": list(),
                             "numberOfSample_in_trainFolder": dict(),
                             "minNumberOfSample_in_trainFolder": 0,
-                            "nameListOfSamples_in_trainFolder": dict(),
-                            "sampleNameList_in_trainFolder" : dict(),
+                            "BINVOXsampleNameList_in_trainFolder": dict(),
+                            "OFFsampleNameList_in_trainFolder" : dict(),
 
                             "numberOfSample_in_testFolder": dict(),
                             "minNumberOfSample_in_testFolder": 0,
-                            "nameListOfSamples_in_testFolder": dict(),
-                            "sampleNameList_in_testFolder": dict(),
+                            "BINVOXsampleNameList_in_testFolder": dict(),
+                            "OFFsampleNameList_in_testFolder": dict(),
                             }
 
         for file in os.listdir(self.prefixDir):
@@ -44,25 +45,35 @@ class Dataset:
 
         for classname in self.classesInfo["listOfClasses"]:
             temp = list()
+            temp2 = list()
             for fileName in os.listdir(self.prefixDir + classname + "/train"):
                 if ".off" in fileName:
                     temp.append(fileName)
+                if ".binvox" in fileName:
+                    temp2.append(fileName)
 
             temp.sort()
-            self.classesInfo["sampleNameList_in_trainFolder"][classname] = temp
+            temp2.sort()
+            self.classesInfo["OFFsampleNameList_in_trainFolder"][classname] = temp
+            self.classesInfo["BINVOXsampleNameList_in_trainFolder"][classname] = temp2
             self.classesInfo["numberOfSample_in_trainFolder"][classname] = len(temp)
-            # print("asdasd ", self.classesInfo["sampleNameList_in_trainFolder"][classname])
+            # print("asdasd ", self.classesInfo["OFFsampleNameList_in_trainFolder"][classname])
 
 
 
         for classname in self.classesInfo["listOfClasses"]:
             temp = list()
+            temp2 = list()
             for fileName in os.listdir(self.prefixDir + classname + "/test"):
                 if ".off" in fileName:
                     temp.append(fileName)
+                if ".binvox" in fileName:
+                    temp2.append(fileName)
 
             temp.sort()
-            self.classesInfo["sampleNameList_in_testFolder"][classname] = temp
+            temp2.sort()
+            self.classesInfo["OFFsampleNameList_in_testFolder"][classname] = temp
+            self.classesInfo["BINVOXsampleNameList_in_testFolder"][classname] = temp2
             self.classesInfo["numberOfSample_in_testFolder"][classname] = len(temp)
 
         self.classesInfo["minNumberOfSample_in_trainFolder"] = min(self.classesInfo["numberOfSample_in_trainFolder"].values())
@@ -73,8 +84,8 @@ class Dataset:
         print("listOfClasses:", self.classesInfo["listOfClasses"],
               "\nminNumberOfSample_in_trainFolder", self.classesInfo["minNumberOfSample_in_trainFolder"],
               "\nminNumberOfSample_in_testFolder", self.classesInfo["minNumberOfSample_in_testFolder"],
-              "\nsampleNameList_in_trainFolder", self.classesInfo["sampleNameList_in_trainFolder"][ classname ][0:10],
-              "\nsampleNameList_in_testFolder", self.classesInfo["sampleNameList_in_testFolder"][ classname ][0:10])
+              "\nOFFsampleNameList_in_trainFolder", self.classesInfo["OFFsampleNameList_in_trainFolder"][ classname ][0:10],
+              "\nOFFsampleNameList_in_testFolder", self.classesInfo["OFFsampleNameList_in_testFolder"][ classname ][0:10])
 
         print("----- Dataset Initialization  finished!! -----\n")
 
@@ -113,7 +124,7 @@ class Dataset:
         minNumber_train = self.classesInfo["minNumberOfSample_in_trainFolder"]
         for classname in self.classesInfo["listOfClasses"]:
             cl_name = classname
-            for sampleName in self.classesInfo["sampleNameList_in_trainFolder"][cl_name][0:minNumber_train]:
+            for sampleName in self.classesInfo["OFFsampleNameList_in_trainFolder"][cl_name][0:minNumber_train]:
                 os.system(
                     "./binvox -c -d " + str(
                         shapeNumber) + " -e -t binvox -cb " + self.prefixDir + classname + "/train" + "/" + sampleName)
@@ -122,7 +133,7 @@ class Dataset:
         minNumber_test = self.classesInfo["minNumberOfSample_in_testFolder"]
         for classname in self.classesInfo["listOfClasses"]:
             cl_name = classname
-            for sampleName in self.classesInfo["sampleNameList_in_testFolder"][cl_name][0:minNumber_test]:
+            for sampleName in self.classesInfo["OFFsampleNameList_in_testFolder"][cl_name][0:minNumber_test]:
 
                 os.system(
                     "./binvox -c -d " + str(
@@ -132,338 +143,171 @@ class Dataset:
         print("{} files were created.".format(totalCounter))
         print("----- create_binvoxFiles_from_offFiles  finished!!")
 
+    def create_numpyFiles_from_binvoxFiles(self, shapeNumber):
+        print("----- create_numpyFiles_from_binvoxFiles  started!!")
 
-    # def forModelNet10_deleteBinvoxFiles(self):
-    #     print("----- prepareDataset --> forModelNet10_deleteBinvoxFiles  started!!")
-    #
-    #     currentdir = os.getcwd()
-    #     ClassDir_in_ModelNet = currentdir + "/Datasets/" + "ModelNet10/ModelNet10/"
-    #     print("ModelNet içindeki tüm class folder'lar burada olmalı : ", ClassDir_in_ModelNet)
-    #
-    #     # klasör isimlerini bul. Onlar ModelNet sınıf isimleridir.
-    #     ListOfClasses = [d for d in os.listdir(ClassDir_in_ModelNet) if
-    #                      os.path.isdir(os.path.join(ClassDir_in_ModelNet, d))]
-    #     # print("\nModelNet10 içindeki sınıf isimlerinin listesi :", ListOfClasses)
-    #
-    #     removedFilesCounter = 0
-    #
-    #     # her sınıfa ait örnek sayılarını listele. minimum örnek sayısı olan sınıfı bul.
-    #     NumberOfSamples_in_theClass = list()
-    #     for classname in ListOfClasses:
-    #         sampleNameList_inTrainFolder = os.listdir(ClassDir_in_ModelNet + classname + "/train")
-    #         # print("classname:", classname, "list: ", sampleNameList)
-    #
-    #         for sampleName in sampleNameList_inTrainFolder:
-    #             if ".binvox" in sampleName:
-    #                 os.remove(ClassDir_in_ModelNet + classname + "/train" + "/" + sampleName)
-    #                 # print("'{}' is removing..".format(sampleName))
-    #                 removedFilesCounter = removedFilesCounter + 1
-    #
-    #         sampleNameList_inTestFolder = os.listdir(ClassDir_in_ModelNet + classname + "/test")
-    #         for sampleName in sampleNameList_inTestFolder:
-    #             if ".binvox" in sampleName:
-    #                 os.remove(ClassDir_in_ModelNet + classname + "/test" + "/" + sampleName)
-    #                 # print("'{}' is removing..".format(sampleName))
-    #                 removedFilesCounter = removedFilesCounter +1
-    #
-    #
-    #     print("{} binvox files are removed in the dataset including 10 class!!".format(removedFilesCounter))
-    #
-    #     print("----- prepareDataset --> forModelNet10_deleteBinvoxFiles  finished!!")
+        passOrbreak = 0
+        for classname in self.classesInfo["listOfClasses"]:
+            if self.classesInfo["minNumberOfSample_in_trainFolder"] != len(self.classesInfo["BINVOXsampleNameList_in_trainFolder"][classname]):
+                passOrbreak = 1
+                print("Eksik bin dosyası var!!",
+                      "\nminNumberOfSample_in_trainFolder:", self.classesInfo["minNumberOfSample_in_trainFolder"],
+                      "\t\tlen(OFFsampleNameList_in_trainFolder in {}): ".format(classname), len(self.classesInfo["BINVOXsampleNameList_in_trainFolder"][classname]) )
 
-    def forModelNet10_create_binvoxFiles_from_offFiles(self, shapeNumber):
-        print("----- prepareDataset --> forModelNet10_create_binvoxFiles_from_offFiles  started!!")
+            if self.classesInfo["minNumberOfSample_in_testFolder"] != len(self.classesInfo["BINVOXsampleNameList_in_testFolder"][classname]):
+                passOrbreak = 1
+                print("Eksik bin dosyası var!!",
+                      "\nminNumberOfSample_in_testFolder:", self.classesInfo["minNumberOfSample_in_testFolder"],
+                      "\t\tlen(OFFsampleNameList_in_testFolder in {}): ".format(classname), len(self.classesInfo["BINVOXsampleNameList_in_testFolder"][classname]) )
 
-        currentdir = os.getcwd()
-        ClassDir_in_ModelNet = currentdir + "/Datasets/" + "ModelNet10/ModelNet10/"
-        print("ModelNet içindeki tüm class folder'lar burada olmalı : ", ClassDir_in_ModelNet)
+        if passOrbreak == 1:
+            exit()
+        else:
+            pass
 
 
-        # klasör isimlerini bul. Onlar ModelNet sınıf isimleridir.
-        ListOfClasses = [d for d in os.listdir(ClassDir_in_ModelNet) if os.path.isdir(os.path.join(ClassDir_in_ModelNet, d))]
-        # print("\nModelNet10 içindeki sınıf isimlerinin listesi :", ListOfClasses)
+        totalNUmberOfSamples = self.classesInfo["minNumberOfSample_in_trainFolder"] * len(self.classesInfo["listOfClasses"])
+        x_train = np.zeros(shape=(totalNUmberOfSamples, shapeNumber, shapeNumber, shapeNumber), dtype=float)
+        y_train = np.zeros((totalNUmberOfSamples,), dtype="int")
+
+        totalNUmberOfSamples2 = self.classesInfo["minNumberOfSample_in_testFolder"] * len(self.classesInfo["listOfClasses"])
+        x_test = np.zeros(shape=(totalNUmberOfSamples2, shapeNumber, shapeNumber, shapeNumber), dtype=float)
+        y_test = np.zeros((totalNUmberOfSamples2,), dtype="int")
 
 
-        #### For Train Folder
-        # her sınıfa ait örnek sayılarını listele. minimum örnek sayısı olan sınıfı bul.
-        NumberOfSamples_in_theClass_trainFolder = list()
-        for classname in ListOfClasses:
-            numberOfSample_in_TrainFolder = len(os.listdir(ClassDir_in_ModelNet + classname + "/train"))
-            NumberOfSamples_in_theClass_trainFolder.append(numberOfSample_in_TrainFolder)
+        currentNumberOfSample = 0
+        currentNumberOfSample2 = 0
+        for label, classname in enumerate(self.classesInfo["listOfClasses"]):
+            for binvoxFileName in self.classesInfo["BINVOXsampleNameList_in_trainFolder"][classname]:
+                with open(self.prefixDir + classname + "/train/" + binvoxFileName, 'rb') as f:
+                    model = binvox_rw.read_as_3d_array(f)
+                    narray = np.ndarray(shape=(1, shapeNumber, shapeNumber, shapeNumber), dtype=float)
+                    narray = model.data
+                    x_train[currentNumberOfSample, :] = narray.astype(float)
+                    y_train[currentNumberOfSample] = label
+                    currentNumberOfSample = currentNumberOfSample +1
+                    # print("currentNumberOfSample: ", currentNumberOfSample)
 
-        # print("NumberOfSamples_in_theClass:\t\t\t\t\t", NumberOfSamples_in_theClass)
-
-        print("\nClassname -- NumberOfSamples")
-        for count in range(len(ListOfClasses)):
-            print("{}:\t\t{}".format(ListOfClasses[count], NumberOfSamples_in_theClass_trainFolder[count]))
-
-        minNumberOfSamples_in_trainFolder = min(NumberOfSamples_in_theClass_trainFolder)
-        print("\nminNumberOfSamples_in_trainFolder:", minNumberOfSamples_in_trainFolder)
-
-
-        for nClass, classname in enumerate(ListOfClasses):
-            print("************* {}   {}/{}".format(classname, nClass+1, len(ListOfClasses)) )
-            for nSample in range(1,minNumberOfSamples_in_trainFolder+1):
-
-                number = '{0:04}'.format(nSample)
-                # print("*************", classname, "--", number,"         type(number):", type(number))
-                # print("*************", "label: ", label)
-
-                # print("converting off file to binvox file -- {}".format(
-                #     ClassDir_in_ModelNet + classname + "/train" + "/" + classname + "_" + number + ".off"))
-                # !!! write "chmod 755 binvox" in the terminal in the directory which binvox existed in.
-                os.system(
-                    "./binvox -c -d " + str(
-                        shapeNumber) + " -e -t binvox -cb " + ClassDir_in_ModelNet + classname + "/train" + "/" + classname + "_" + number + ".off")
-
-        # print("\n\n*************", classname, "  nClass", nClass)
-        # print("*************", nSample)
-        print("\nminNumberOfSamples_in_trainFolder:", minNumberOfSamples_in_trainFolder)
-
-        print("----- prepareDataset --> forModelNet10_create_binvoxFiles_from_offFiles  finished!!")
-
-        return minNumberOfSamples
-
-    def forModelNet10_create_numpyFiles_from_binvoxFiles(self, shapeNumber, minNumberOfSamples):
-        print("----- prepareDataset --> forModelNet10_create_numpyFiles_from_binvoxFiles  started!!")
-
-        currentdir = os.getcwd()
-        ClassDir_in_ModelNet = currentdir + "/Datasets/" + "ModelNet10/ModelNet10/"
-        outputFiles_in_ModelNet10 = currentdir + "/Datasets/" + "ModelNet10_output/"
-        print("ModelNet içindeki tüm class folder'lar burada olmalı : ", ClassDir_in_ModelNet)
-
-        # klasör isimlerini bul. Onlar ModelNet sınıf isimleridir.
-        ListOfClasses = [d for d in os.listdir(ClassDir_in_ModelNet) if
-                         os.path.isdir(os.path.join(ClassDir_in_ModelNet, d))]
-        # print("\nModelNet10 içindeki sınıf isimlerinin listesi :", ListOfClasses)
-
-        # her sınıfa ait örnek sayılarını listele. minimum örnek sayısı olan sınıfı bul.
-        NumberOfSamples_in_theClass = list()
-        for classname in ListOfClasses:
-            numberOfSample_in_TrainFolder = len(os.listdir(ClassDir_in_ModelNet + classname + "/train"))
-            NumberOfSamples_in_theClass.append(numberOfSample_in_TrainFolder)
-
-        # print("NumberOfSamples_in_theClass:\t\t\t\t\t", NumberOfSamples_in_theClass)
-
-        # print("\nClassname -- NumberOfSamples")
-        # for count in range(len(ListOfClasses)):
-        #     print("{}:\t\t{}".format(ListOfClasses[count], NumberOfSamples_in_theClass[count]))
-
-        # minNumberOfSamples = min(NumberOfSamples_in_theClass)
-        print("\nMinNumberOfMembers:", minNumberOfSamples)
-
-
-
-
-        totalsamplenumber = 0
-        trainSamples_counter = 0
-        label = 0
-        dataNumber = minNumberOfSamples * len(ListOfClasses)
-        x_train = np.zeros(shape=(dataNumber, shapeNumber, shapeNumber, shapeNumber), dtype=float)
-        y_train = np.zeros((dataNumber,), dtype="int")
-
-
-
-
-        for nClass, classname in enumerate(ListOfClasses):
-            print("************* {}   {}/{}".format(classname, nClass+1, len(ListOfClasses)))
-            for nSample in range(1,minNumberOfSamples+1):
-                number = '{0:04}'.format(nSample)
-
-            binvoxfilepath = ClassDir_in_ModelNet + classname + "/train" + "/" + classname + "_" + number + ".binvox"
-
-            with open(binvoxfilepath, 'rb') as f:
-                model = binvox_rw.read_as_3d_array(f)
-                narray = np.ndarray(shape=(1, shapeNumber, shapeNumber, shapeNumber), dtype=float)
-                narray = model.data
-                x_train[trainSamples_counter, :] = narray.astype(float)
-                y_train[trainSamples_counter] = label
-                totalsamplenumber = totalsamplenumber + 1
-                trainSamples_counter = trainSamples_counter + 1
-            # time.sleep(2)
-            # os.remove(binvoxfilepath)
-
-            label = label + 1
+            for binvoxFileName2 in self.classesInfo["BINVOXsampleNameList_in_testFolder"][classname]:
+                with open(self.prefixDir + classname + "/test/" + binvoxFileName2, 'rb') as f:
+                    model2 = binvox_rw.read_as_3d_array(f)
+                    narray2 = np.ndarray(shape=(1, shapeNumber, shapeNumber, shapeNumber), dtype=float)
+                    narray2 = model2.data
+                    x_test[currentNumberOfSample2, :] = narray2.astype(float)
+                    y_test[currentNumberOfSample2] = label
+                    currentNumberOfSample2 = currentNumberOfSample2 +1
+                    # print("currentNumberOfSample2: ", currentNumberOfSample2)
 
         dt = datetime.datetime.today()
 
         print("x_train.shape", x_train.shape)
-        np.save(outputFiles_in_ModelNet10 + "x_train_shapeNumber{}__{}_{}_{}__{}_{}_{}.npy".format(shapeNumber, dt.day, dt.month, dt.year, dt.hour, dt.minute, dt.second) , x_train)
-
-        y_train_categorical = to_categorical(y_train, len(ListOfClasses))
+        np.save(self.prefixDirOutput + "x_train_shape{}_{}_{}_{}__{}_{}_{}.npy".format(shapeNumber, dt.day,
+                                                                                       dt.month, dt.year,
+                                                                                       dt.hour, dt.minute,
+                                                                                       dt.second), x_train)
+        y_train_categorical = to_categorical(y_train, len(self.classesInfo["listOfClasses"]))
         print("y_train_categorical.shape", y_train_categorical.shape)
-        np.save(outputFiles_in_ModelNet10 + "y_train_shapeNumber{}_{}_{}_{}__{}_{}_{}.npy".format(shapeNumber, dt.day, dt.month, dt.year, dt.hour, dt.minute, dt.second), y_train_categorical)
+        np.save(self.prefixDirOutput + "y_train_shape{}_{}_{}_{}__{}_{}_{}.npy".format(shapeNumber, dt.day,
+                                                                                      dt.month, dt.year,
+                                                                                      dt.hour, dt.minute,
+                                                                                      dt.second), y_train_categorical)
 
 
-        print("----- prepareDataset --> forModelNet10_create_numpyFiles_from_binvoxFiles  finished!!")
+        print("x_test.shape", x_test.shape)
+        np.save(self.prefixDirOutput + "x_test_shape{}_{}_{}_{}__{}_{}_{}.npy".format(shapeNumber, dt.day,
+                                                                                       dt.month, dt.year,
+                                                                                       dt.hour, dt.minute,
+                                                                                       dt.second), x_test)
+
+        y_test_categorical = to_categorical(y_test, len(self.classesInfo["listOfClasses"]))
+        print("y_test_categorical.shape", y_test_categorical.shape)
+        np.save(self.prefixDirOutput + "y_test_shape{}_{}_{}_{}__{}_{}_{}.npy".format(shapeNumber, dt.day,
+                                                                                       dt.month, dt.year,
+                                                                                       dt.hour, dt.minute,
+                                                                                       dt.second), y_test_categorical)
+
+        print("----- create_numpyFiles_from_binvoxFiles  finished!!")
 
 
+class TrainOP:
 
-    def forModelNet40_deleteBinvoxFiles(self):
-        print("----- prepareDataset --> forModelNet40_deleteBinvoxFiles  started!!")
-
-        currentdir = os.getcwd()
-        ClassDir_in_ModelNet = currentdir + "/Datasets/" + "ModelNet40/ModelNet40/"
-        print("ModelNet içindeki tüm class folder'lar burada olmalı : ", ClassDir_in_ModelNet)
-
-        # klasör isimlerini bul. Onlar ModelNet sınıf isimleridir.
-        ListOfClasses = [d for d in os.listdir(ClassDir_in_ModelNet) if
-                         os.path.isdir(os.path.join(ClassDir_in_ModelNet, d))]
-        # print("\nModelNet10 içindeki sınıf isimlerinin listesi :", ListOfClasses)
-
-        removedFilesCounter = 0
-
-        # her sınıfa ait örnek sayılarını listele. minimum örnek sayısı olan sınıfı bul.
-        NumberOfSamples_in_theClass = list()
-        for classname in ListOfClasses:
-            sampleNameList = os.listdir(ClassDir_in_ModelNet + classname + "/train")
-            # print("classname:", classname, "list: ", sampleNameList)
-
-            for sampleName in sampleNameList:
-                if ".binvox" in sampleName:
-                    os.remove(ClassDir_in_ModelNet + classname + "/train" + "/" + sampleName)
-                    # print("'{}' is removing..".format(sampleName))
-                    removedFilesCounter = removedFilesCounter +1
-
-
-        print("{} binvox files are removed in the dataset including 40 class!!".format(removedFilesCounter))
-
-        print("----- prepareDataset --> forModelNet40_deleteBinvoxFiles  finished!!")
-
-    def forModelNet40_create_binvoxFiles_from_offFiles(self, shapeNumber):
-        print("----- prepareDataset --> forModelNet40_create_binvoxFiles_from_offFiles  started!!")
-
-        currentdir = os.getcwd()
-        ClassDir_in_ModelNet = currentdir + "/Datasets/" + "ModelNet40/ModelNet40/"
-        print("ModelNet içindeki tüm class folder'lar burada olmalı : ", ClassDir_in_ModelNet)
-
-
-        # klasör isimlerini bul. Onlar ModelNet sınıf isimleridir.
-        ListOfClasses = [d for d in os.listdir(ClassDir_in_ModelNet) if os.path.isdir(os.path.join(ClassDir_in_ModelNet, d))]
-        # print("\nModelNet10 içindeki sınıf isimlerinin listesi :", ListOfClasses)
-
-        # her sınıfa ait örnek sayılarını listele. minimum örnek sayısı olan sınıfı bul.
-        NumberOfSamples_in_theClass = list()
-        for classname in ListOfClasses:
-            numberOfSample_in_TrainFolder = len(os.listdir(ClassDir_in_ModelNet + classname + "/train"))
-            NumberOfSamples_in_theClass.append(numberOfSample_in_TrainFolder)
-
-        # print("NumberOfSamples_in_theClass:\t\t\t\t\t", NumberOfSamples_in_theClass)
-
-        print("\nClassname -- NumberOfSamples")
-        for count in range(len(ListOfClasses)):
-            print("{}:\t\t{}".format(ListOfClasses[count], NumberOfSamples_in_theClass[count]))
-
-        minNumberOfSamples = min(NumberOfSamples_in_theClass)
-        print("\nMinNumberOfMembers:", minNumberOfSamples)
-
-
-
-        # totalsamplenumber = 0
-        # trainSamples_counter = 0
-        # label = 0
-        # dataNumber = minNumberOfSamples * len(ListOfClasses)
-        # x_train = np.zeros(shape=(dataNumber, shapeNumber, shapeNumber, shapeNumber), dtype=float)
-        # y_train = np.zeros((dataNumber,), dtype="int")
-
-
-
-        for nClass, classname in enumerate(ListOfClasses):
-            print("************* {}   {}/{}".format(classname, nClass+1, len(ListOfClasses)) )
-            for nSample in range(1,minNumberOfSamples+1):
-
-                number = '{0:04}'.format(nSample)
-                # print("*************", classname, "--", number,"         type(number):", type(number))
-                # print("*************", "label: ", label)
-
-                # print("converting off file to binvox file -- {}".format(
-                #     ClassDir_in_ModelNet + classname + "/train" + "/" + classname + "_" + number + ".off"))
-                # !!! write "chmod 755 binvox" in the terminal in the directory which binvox existed in.
-                os.system(
-                    "./binvox -c -d " + str(
-                        shapeNumber) + " -e -t binvox -cb " + ClassDir_in_ModelNet + classname + "/train" + "/" + classname + "_" + number + ".off")
-                # time.sleep(2)
-
-        # print("\n\n*************", classname, "  nClass", nClass)
-        # print("*************", nSample)
-        print("\nMinNumberOfMembers:", minNumberOfSamples)
-
-        print("----- prepareDataset --> forModelNet40_create_binvoxFiles_from_offFiles  finished!!")
-
-        return minNumberOfSamples
-
-    def forModelNet40_create_numpyFiles_from_binvoxFiles(self, shapeNumber, minNumberOfSamples):
-        print("----- prepareDataset --> forModelNet40_create_numpyFiles_from_binvoxFiles  started!!")
-
-        currentdir = os.getcwd()
-        ClassDir_in_ModelNet = currentdir + "/Datasets/" + "ModelNet40/ModelNet40/"
-        outputFiles_in_ModelNet40 = currentdir + "/Datasets/" + "ModelNet40_output/"
-        print("ModelNet içindeki tüm class folder'lar burada olmalı : ", ClassDir_in_ModelNet)
-
-        # klasör isimlerini bul. Onlar ModelNet sınıf isimleridir.
-        ListOfClasses = [d for d in os.listdir(ClassDir_in_ModelNet) if
-                         os.path.isdir(os.path.join(ClassDir_in_ModelNet, d))]
-        print("\nModelNet10 içindeki sınıf isimlerinin listesi :", ListOfClasses)
-
-        # her sınıfa ait örnek sayılarını listele. minimum örnek sayısı olan sınıfı bul.
-        NumberOfSamples_in_theClass = list()
-        for classname in ListOfClasses:
-            numberOfSample_in_TrainFolder = len(os.listdir(ClassDir_in_ModelNet + classname + "/train"))
-            NumberOfSamples_in_theClass.append(numberOfSample_in_TrainFolder)
-
-        # print("NumberOfSamples_in_theClass:\t\t\t\t\t", NumberOfSamples_in_theClass)
-
-        # print("\nClassname -- NumberOfSamples")
-        # for count in range(len(ListOfClasses)):
-        #     print("{}:\t\t{}".format(ListOfClasses[count], NumberOfSamples_in_theClass[count]))
-
-        # minNumberOfSamples = min(NumberOfSamples_in_theClass)
-        print("\nMinNumberOfMembers:", minNumberOfSamples)
-
-
-
-
-        totalsamplenumber = 0
-        trainSamples_counter = 0
-        label = 0
-        dataNumber = minNumberOfSamples * len(ListOfClasses)
-        x_train = np.zeros(shape=(dataNumber, shapeNumber, shapeNumber, shapeNumber), dtype=float)
-        y_train = np.zeros((dataNumber,), dtype="int")
-
-
-
-
-        for nClass, classname in enumerate(ListOfClasses):
-            print("************* {}   {}/{}".format(classname, nClass+1, len(ListOfClasses)))
-            for nSample in range(1,minNumberOfSamples+1):
-                number = '{0:04}'.format(nSample)
-
-            binvoxfilepath = ClassDir_in_ModelNet + classname + "/train" + "/" + classname + "_" + number + ".binvox"
-
-            with open(binvoxfilepath, 'rb') as f:
-                model = binvox_rw.read_as_3d_array(f)
-                narray = np.ndarray(shape=(1, shapeNumber, shapeNumber, shapeNumber), dtype=np.uint8)
-                narray = model.data
-                x_train[trainSamples_counter, :] = narray.astype(np.uint8)
-                y_train[trainSamples_counter] = label
-                totalsamplenumber = totalsamplenumber + 1
-                trainSamples_counter = trainSamples_counter + 1
-            # time.sleep(2)
-            # os.remove(binvoxfilepath)
-
-            label = label + 1
+    def __init__(self, prefixDirOutput, filename__x_train, filename__y_train):
+        print("\n----- TrainOP Initialization  started!! -----")
+        self.prefixDirOutput = prefixDirOutput
 
         dt = datetime.datetime.today()
+        self.prefixForOutputFileName = "output_{}{}{}__{}_{}_{}__".format(dt.day, dt.month, dt.year,
+                                                                         dt.hour, dt.minute, dt.second)
 
-        print("x_train.shape", x_train.shape)
-        np.save(outputFiles_in_ModelNet40 + "x_train_shapeNumber{}_{}_{}_{}__{}_{}_{}.npy".format(shapeNumber, dt.day, dt.month, dt.year, dt.hour, dt.minute, dt.second) , x_train)
+        y_train_total = np.load(filename__y_train)
+        # y_train_total = y_train_total.astype(float)
+        x_train_total = np.load(filename__x_train)
+        x_train_total = x_train_total.astype(float)
+        x_train_total = np.expand_dims(x_train_total, axis=4)
+        print("x_train_total shape: ", x_train_total.shape, "\ty_train_total shape: ", y_train_total.shape)
 
-        y_train_categorical = to_categorical(y_train, len(ListOfClasses))
-        print("y_train_categorical.shape", y_train_categorical.shape)
-        np.save(outputFiles_in_ModelNet40 + "y_train_shapeNumber{}_{}_{}_{}__{}_{}_{}.npy".format(shapeNumber, dt.day, dt.month, dt.year, dt.hour, dt.minute, dt.second), y_train_categorical)
+        self.x_train, self.x_valid, self.y_train, self.y_valid = train_test_split(x_train_total, y_train_total, test_size=0.2, random_state=1)
+        print("\nx_train shape: ", self.x_train.shape, "\ty_train shape: ", self.y_train.shape)
+        print("x_valid shape: ", self.x_valid.shape, "\ty_valid shape: ", self.y_valid.shape)
 
+        print("\n----- TrainOP Initialization  finished!! -----")
 
-        print("----- prepareDataset --> forModelNet40_create_numpyFiles_from_binvoxFiles  finished!!")
+    def build_and_train_ModelNet(self):
+        print("\n----- build_and_train  started!! -----")
+
+        #### Nested definiton START ####
+        def my_initializer(shape, dtype=None):
+            receptive_field_size = np.prod(shape[2:])
+            c = shape[1]  # input channels
+            nl = c * receptive_field_size
+            std = np.sqrt(2.0 / (nl))
+            return np.random.normal(0, std, size=shape).astype('float32')
+
+        #### Nested definiton END   ####
+
+        input_shape = self.x_train.shape[1:5]
+        num_classes = self.y_train.shape[1]
+        print("input shape: ", input_shape, "num classes: ", num_classes)
+
+        inputs1 = Input(shape=input_shape)
+
+        layer1 = Conv3D(filters=32, kernel_size=5, strides=(2, 2, 2), padding="valid",
+                        activation='relu', kernel_initializer=my_initializer)(inputs1)
+        layer1 = Dropout(0.2)(layer1)
+
+        layer2 = Conv3D(filters=32, kernel_size=3, strides=(1, 1, 1), padding="valid",
+                        activation='relu', kernel_initializer=my_initializer)(layer1)
+        layer2 = MaxPooling3D(pool_size=(2, 2, 2), padding="valid")(layer2)
+        layer2 = Dropout(0.3)(layer2)
+
+        flat = Flatten()(layer2)
+
+        dense1 = Dense(128, kernel_initializer=initializers.RandomNormal(stddev=0.01))(flat)
+        dense1 = Dropout(0.4)(dense1)
+
+        outputs = Dense(num_classes, kernel_initializer=initializers.RandomNormal(stddev=0.01))(dense1)
+        outputs = Activation("softmax")(outputs)
+
+        model = Model(inputs=inputs1, outputs=outputs)
+        model.summary()
+
+        filepath = self.prefixDirOutput + self.prefixForOutputFileName + "Architecture.png"
+        ## ""sudo apt-get install graphviz""
+        ## terminal'e bunu yazmalısın. virEnv bağımsız yüklemelisin.
+        plot_model(model, show_shapes=True, to_file=filepath)
+
+        sgd = SGD(lr=0.01, momentum=0.9, nesterov=True)
+        model.compile(optimizer=sgd, loss="categorical_crossentropy", metrics=["accuracy"])
+
+        history = model.fit(x=self.x_train, y=self.y_train, validation_data=(self.x_valid, self.y_valid),
+                            epochs=10, batch_size=16, verbose=2)
+
+        model_filepath = self.prefixDirOutput + self.prefixForOutputFileName + "Model.h5"
+        model.save(model_filepath)
+        print("Model was saved to the path")
+
+        print("\n----- build_and_train  finished!! -----")
+
 
 
 
